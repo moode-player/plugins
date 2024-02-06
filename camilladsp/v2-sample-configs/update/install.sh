@@ -23,7 +23,7 @@
 
 # Plugin name and update date
 PLUGIN_NAME=$1
-PLUGIN_UPDATE_DATE="YYYY-MM-DD"
+PLUGIN_UPDATE_DATE="2024-01-06"
 SQLDB=/var/local/www/db/moode-sqlite3.db
 
 # Initialize the step counter
@@ -82,7 +82,7 @@ apt -y install systemd-timesyncd
 # 2 - Install plugin files
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Install $PLUGIN_NAME"
-cp ./files/* /usr/share/camilladsp/configs
+cp update/files/* /usr/share/camilladsp/configs
 
 # 3 - Flush cached disk writes
 STEP=$((STEP + 1))
