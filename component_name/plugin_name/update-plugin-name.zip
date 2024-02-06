@@ -1,0 +1,10 @@
+########################################
+# Update package for plugin <name>
+#
+# http://moodeaudio.org
+########################################
+
+Name: Plugin name goes here
+Date: YYYY-MM-DD
+Release: major.minor.patch
+Description: Plugin description goes here

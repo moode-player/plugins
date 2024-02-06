@@ -1,0 +1,211 @@
+description: Michael Gerzon derived Trifield decoder. Requires at least 3 channels
+  available for output. https://www.meridian-audio.info/public/trifield%5B2563%5D.pdf
+devices:
+  adjust_period: 10
+  capture:
+    channels: 2
+    extra_samples: null
+    filename: /dev/stdin
+    format: S24LE
+    read_bytes: null
+    skip_bytes: null
+    type: File
+  capture_samplerate: null
+  chunksize: 4096
+  enable_rate_adjust: false
+  playback:
+    channels: 2
+    device: hw:0,0
+    format: S24LE
+    type: Alsa
+  queuelimit: 1
+  rate_measure_interval: 1
+  samplerate: 44100
+  silence_threshold: -60
+  silence_timeout: 3
+  stop_on_rate_change: false
+  target_level: 0
+  volume_ramp_time: 150
+filters:
+  AP:
+    description: null
+    parameters:
+      freq: 5000
+      q: 0.5
+      type: Allpass
+    type: Biquad
+  HP:
+    description: null
+    parameters:
+      freq: 5000
+      q: 0.5
+      type: Highpass
+    type: Biquad
+  LP:
+    description: null
+    parameters:
+      freq: 5000
+      q: 0.5
+      type: Lowpass
+    type: Biquad
+  pregain:
+    description: null
+    parameters:
+      gain: -3
+      inverted: false
+      mute: false
+      scale: null
+    type: Gain
+mixers:
+  DIV:
+    channels:
+      in: 3
+      out: 3
+    description: null
+    mapping:
+    - dest: 0
+      mute: false
+      sources:
+      - channel: 0
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 1
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+    - dest: 1
+      mute: false
+      sources:
+      - channel: 0
+        gain: -3
+        inverted: true
+        mute: false
+        scale: null
+      - channel: 1
+        gain: -3
+        inverted: true
+        mute: false
+        scale: null
+    - dest: 2
+      mute: false
+      sources:
+      - channel: 2
+        gain: -1
+        inverted: false
+        mute: false
+        scale: null
+  LCR:
+    channels:
+      in: 3
+      out: 3
+    description: null
+    mapping:
+    - dest: 0
+      mute: false
+      sources:
+      - channel: 0
+        gain: 0
+        inverted: false
+        mute: false
+        scale: null
+    - dest: 1
+      mute: false
+      sources:
+      - channel: 1
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 2
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+    - dest: 2
+      mute: false
+      sources:
+      - channel: 1
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 2
+        gain: -3
+        inverted: true
+        mute: false
+        scale: null
+  MS:
+    channels:
+      in: 2
+      out: 3
+    description: null
+    mapping:
+    - dest: 0
+      mute: false
+      sources:
+      - channel: 0
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 1
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+    - dest: 1
+      mute: false
+      sources:
+      - channel: 0
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 1
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+    - dest: 2
+      mute: false
+      sources:
+      - channel: 0
+        gain: -3
+        inverted: false
+        mute: false
+        scale: null
+      - channel: 1
+        gain: -3
+        inverted: true
+        mute: false
+        scale: null
+pipeline:
+- bypassed: null
+  description: null
+  name: MS
+  type: Mixer
+- bypassed: null
+  channel: 0
+  description: null
+  names:
+  - HP
+  type: Filter
+- bypassed: null
+  channel: 1
+  description: null
+  names:
+  - LP
+  type: Filter
+- bypassed: null
+  description: null
+  name: DIV
+  type: Mixer
+- bypassed: null
+  description: null
+  name: LCR
+  type: Mixer
+processors: null
+title: Trifield 3-Channel
