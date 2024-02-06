@@ -7,4 +7,4 @@
 Name: CamillaDSP v2 Sample Configurations
 Date: 2024-02-06
 Release: 1.0.0
-Description: Sample configyration YML files for CamillaDSP version 2. These are installed into the /usr/share/camilladsp/configs directory. Files of the same name are overwritten.
+Description: Sample configuration and coefficient files for CamillaDSP version 2. These are installed into the /usr/share/camilladsp/configs and /coeffs directory. Files of the same name are overwritten.

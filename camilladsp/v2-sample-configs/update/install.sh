@@ -82,7 +82,8 @@ apt -y install systemd-timesyncd
 # 2 - Install plugin files
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Install $PLUGIN_NAME"
-cp update/files/* /usr/share/camilladsp/configs
+cp update/files/configs* /usr/share/camilladsp/configs
+cp update/files/coeffs* /usr/share/camilladsp/coeffs
 
 # 3 - Flush cached disk writes
 STEP=$((STEP + 1))
