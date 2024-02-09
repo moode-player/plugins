@@ -1,5 +1,5 @@
 description: Binaural Room Impulse Response R02 Control Room from the ASH-IR dataset
-  (without HpCF) https://github.com/ShanonPearce/ASH-IR-Dataset
+  (without HpCF).
 devices:
   adjust_period: 3
   capture:

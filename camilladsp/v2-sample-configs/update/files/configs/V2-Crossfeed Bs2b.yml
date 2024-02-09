@@ -1,5 +1,4 @@
-description: Bs2b from Wang-Yue which contains 5 setting sets. Refer to link for more
-  information. https://github.com/Wang-Yue/camilladsp-crossfeed
+description: Bs2b from Wang-Yue which contains 5 setting sets.
 devices:
   adjust_period: 3
   capture:

@@ -1,5 +1,5 @@
 description: Michael Gerzon derived Trifield decoder. Requires at least 3 channels
-  available for output. https://www.meridian-audio.info/public/trifield%5B2563%5D.pdf
+  available for output.
 devices:
   adjust_period: 10
   capture:
