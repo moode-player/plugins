@@ -1,0 +1,37 @@
+[blue]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = blue-bgr.png
+fgr.filename = blue-fgr.png
+indicator.filename = blue-needle.png
+steps.per.degree = 2
+start.angle = 45
+stop.angle = -45
+distance = 282
+left.origin.x = 390
+left.origin.y = 570
+right.origin.x = 1168
+right.origin.y = 570
+meter.x = 0
+meter.y = 0
+screen.bgr = blue-screen-bgr.png
+
+[rust]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = rust-bgr.png
+fgr.filename = rust-fgr.png
+indicator.filename = rust-needle.png
+steps.per.degree = 2
+start.angle = 38
+stop.angle = -38
+distance = 190
+left.origin.x = 434
+left.origin.y = 530
+right.origin.x = 1177
+right.origin.y = 530
+meter.x = 0
+meter.y = 0
+screen.bgr = rust-screen-bgr.png

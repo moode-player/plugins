@@ -1,0 +1,170 @@
+[black-white]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = black-white-bgr.png
+fgr.filename = black-white-fgr.png
+indicator.filename = black-white-needle.png
+steps.per.degree = 2
+start.angle = 45
+stop.angle = -46
+distance = 155
+left.origin.x = 276
+left.origin.y = 372
+right.origin.x = 762
+right.origin.y = 372
+meter.x = 0
+meter.y = 0
+screen.bgr = black-white-screen-bgr.png
+
+[blue]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = blue-bgr.png
+fgr.filename = blue-fgr.png
+indicator.filename = blue-needle.png
+steps.per.degree = 2
+start.angle = 45
+stop.angle = -45
+distance = 140
+left.origin.x = 255
+left.origin.y = 365
+right.origin.x = 752
+right.origin.y = 365
+meter.x = 0
+meter.y = 0
+screen.bgr = blue-screen-bgr.png
+
+[emerald]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = emerald-bgr.png
+fgr.filename = emerald-fgr.png
+indicator.filename = emerald-needle.png
+steps.per.degree = 2
+start.angle = 47
+stop.angle = -47
+distance = 140
+left.origin.x = 270
+left.origin.y = 322
+right.origin.x = 750
+right.origin.y = 322
+meter.x = 0
+meter.y = 0
+screen.bgr = emerald-screen-bgr.png
+
+[gold]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = gold-bgr.png
+fgr.filename = gold-fgr.png
+indicator.filename = gold-needle.png
+steps.per.degree = 2
+start.angle = 44
+stop.angle = -44
+distance = 160
+left.origin.x = 265
+left.origin.y = 300
+right.origin.x = 765
+right.origin.y = 300
+meter.x = 0
+meter.y = 0
+screen.bgr = gold-screen-bgr.png
+
+[orange]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = orange-bgr.png
+fgr.filename = orange-fgr.png
+indicator.filename = orange-needle.png
+steps.per.degree = 2
+start.angle = 48
+stop.angle = -48
+distance = 102
+left.origin.x = 275
+left.origin.y = 270
+right.origin.x = 750
+right.origin.y = 270
+meter.x = 0
+meter.y = 0
+screen.bgr = orange-screen-bgr.png
+
+[red]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = red-bgr.png
+fgr.filename = red-fgr.png
+indicator.filename = red-needle.png
+steps.per.degree = 2
+start.angle = 43
+stop.angle = -43
+distance = 130
+left.origin.x = 275
+left.origin.y = 345
+right.origin.x = 748
+right.origin.y = 345
+meter.x = 0
+meter.y = 0
+screen.bgr = red-screen-bgr.png
+
+[rust]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = rust-bgr.png
+fgr.filename = rust-fgr.png
+indicator.filename = rust-needle.png
+steps.per.degree = 2
+start.angle = 38
+stop.angle = -38
+distance = 123
+left.origin.x = 274
+left.origin.y = 336
+right.origin.x = 752
+right.origin.y = 336
+meter.x = 0
+meter.y = 0
+screen.bgr = rust-screen-bgr.png
+
+[tube]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = tube-bgr.png
+fgr.filename = tube-fgr.png
+indicator.filename = tube-needle.png
+steps.per.degree = 2
+start.angle = 35
+stop.angle = -35
+distance = 118
+left.origin.x = 230
+left.origin.y = 300
+right.origin.x = 792
+right.origin.y = 300
+meter.x = 0
+meter.y = 0
+screen.bgr = tube-screen-bgr.png
+
+[white-red]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = white-red-bgr.png
+fgr.filename = white-red-fgr.png
+indicator.filename = white-red-needle.png
+steps.per.degree = 2
+start.angle = 38
+stop.angle = -38
+distance = 125
+left.origin.x = 275
+left.origin.y = 335
+right.origin.x = 752
+right.origin.y = 335
+meter.x = 0
+meter.y = 0
+screen.bgr = white-red-screen-bgr.png
