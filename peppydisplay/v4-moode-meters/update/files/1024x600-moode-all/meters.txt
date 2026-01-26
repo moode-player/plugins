@@ -85,22 +85,6 @@ meter.x = 112
 meter.y = 96
 screen.bgr = default-screen-bgr.png
 
-[rainbow]
-meter.type = circular
-channels = 1
-ui.refresh.period = 0.033
-bgr.filename = rainbow-bgr.png
-indicator.filename = rainbow-needle.png
-steps.per.degree = 2
-start.angle = 39
-stop.angle = -39
-distance = 260
-mono.origin.x = 408
-mono.origin.y = 582
-meter.x = 112
-meter.y = 96
-screen.bgr = default-screen-bgr.png
-
 [grunge]
 meter.type = circular
 channels = 2
@@ -201,6 +185,22 @@ stop.angle = -39
 distance = 228
 mono.origin.x = 407
 mono.origin.y = 526
+meter.x = 112
+meter.y = 96
+screen.bgr = default-screen-bgr.png
+
+[rainbow]
+meter.type = circular
+channels = 1
+ui.refresh.period = 0.033
+bgr.filename = rainbow-bgr.png
+indicator.filename = rainbow-needle.png
+steps.per.degree = 2
+start.angle = 39
+stop.angle = -39
+distance = 260
+mono.origin.x = 408
+mono.origin.y = 582
 meter.x = 112
 meter.y = 96
 screen.bgr = default-screen-bgr.png
