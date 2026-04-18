@@ -88,7 +88,7 @@ message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PLUGIN_NAME"
 message_log "** - Install git tools"
 apt -y install git
 if [ $? -ne 0 ]; then
-	cancel_update "** Step failed"
+	cancel_update "** Install failed"
 fi
 
 message_log "** - Set Debian exports"
@@ -99,24 +99,40 @@ message_log "** - Clone package build repo"
 rm -rf $WD/pkgbuild
 git clone --depth 1 https://github.com/moode-player/pkgbuild.git
 if [ $? -ne 0 ]; then
-	cancel_update "** Step failed"
+	cancel_update "** Clone failed"
 fi
 
-SHAIRPORT_SYNC_DEB="shairport-sync_5.0.2-1moode1_arm64.deb"
+PACKAGE_DIR="shairport-sync"
+PACKAGE_DEB="shairport-sync_5.0.2-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $SHAIRPORT_SYNC_DEB..."
-cd $WD/pkgbuild/packages/shairport-sync
+message_log "** - Building $PACKAGE_DEB..."
+cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
 ./build.sh
 if [ $? -ne 0 ]; then
-	cancel_update "** Step failed"
+	cancel_update "** Build failed"
+fi
+message_log "** - Installing $PACKAGE_DEB..."
+cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+# Options preserve /etc/shairport-sync.conf from image build
+apt -y --allow-downgrades -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install /tmp/$PACKAGE_DEB
+if [ $? -ne 0 ]; then
+	cancel_update "** Install failed"
 fi
 
-message_log "** - Installing $SHAIRPORT_SYNC_DEB..."
-cp $WD/pkgbuild/packages/shairport-sync/dist/binary/$SHAIRPORT_SYNC_DEB /tmp/
-# Preserve /etc/shairport-sync.conf from image build
-apt -y --allow-downgrades -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install /tmp/$SHAIRPORT_SYNC_DEB
+PACKAGE_DIR="nqptp"
+PACKAGE_DEB="nqptp_1.2.6-1moode1_arm64.deb"
+message_log "** - Build and Install $PLUGIN_NAME"
+message_log "** - Building $PACKAGE_DEB..."
+cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
+./build.sh
 if [ $? -ne 0 ]; then
-	cancel_update "** Step failed"
+	cancel_update "** Build failed"
+fi
+message_log "** - Installing $PACKAGE_DEB..."
+cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+apt -y install /tmp/$PACKAGE_DEB
+if [ $? -ne 0 ]; then
+	cancel_update "** Install failed"
 fi
 
 message_log "** - Update $PLUGIN_NAME systemd services"

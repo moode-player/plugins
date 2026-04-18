@@ -78,12 +78,46 @@ message_log "Start $PLUGIN_UPDATE_DATE update for $PLUGIN_NAME"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Install timesyncd"
 apt -y install systemd-timesyncd
+if [ $? -ne 0 ]; then
+	cancel_update "** Step failed"
+fi
 
-# 2 - Install plugin files
+# 2 - Build and Install plugin
 STEP=$((STEP + 1))
-message_log "** Step $STEP-$TOTAL_STEPS: Install $PLUGIN_NAME"
-cp update/files/configs/* /usr/share/camilladsp/configs
-cp update/files/coeffs/* /usr/share/camilladsp/coeffs
+message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PLUGIN_NAME"
+message_log "** - Install git tools"
+apt -y install git
+if [ $? -ne 0 ]; then
+	cancel_update "** Install failed"
+fi
+
+message_log "** - Set Debian exports"
+export DEBFULLNAME=User
+export DEBEMAIL=User@Email.com
+
+message_log "** - Clone package build repo"
+rm -rf $WD/pkgbuild
+git clone --depth 1 https://github.com/moode-player/pkgbuild.git
+if [ $? -ne 0 ]; then
+	cancel_update "** Clone failed"
+fi
+
+PACKAGE_DIR="librespot"
+PACKAGE_DEB="librespot_0.8.0-1moode1_arm64.deb"
+message_log "** - Build and Install $PLUGIN_NAME"
+message_log "** - Building $PACKAGE_DEB..."
+cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
+./build.sh
+if [ $? -ne 0 ]; then
+	cancel_update "** Build failed"
+fi
+message_log "** - Installing $PACKAGE_DEB..."
+cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+# Options preserve /etc/shairport-sync.conf from image build
+apt -y install /tmp/$PACKAGE_DEB
+if [ $? -ne 0 ]; then
+	cancel_update "** Install failed"
+fi
 
 # 3 - Flush cached disk writes
 STEP=$((STEP + 1))
