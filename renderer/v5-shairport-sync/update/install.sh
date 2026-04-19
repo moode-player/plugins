@@ -21,14 +21,17 @@
 # Environment
 #
 
-# Plugin name and update date
+# 1: Plugin name and update date
 PLUGIN_NAME=$1
 PLUGIN_UPDATE_DATE="2026-MM-DD"
-SQLDB=/var/local/www/db/moode-sqlite3.db
 
-# Initialize the step counter
+# 2: Initialize the step counter
 STEP=0
 TOTAL_STEPS=3
+
+# System vars
+SQLDB=/var/local/www/db/moode-sqlite3.db
+HOME_DIR=$(moodeutl -d -gv home_dir)
 
 # Log files
 MOODE_LOG="/var/log/moode.log"
@@ -102,46 +105,122 @@ if [ $? -ne 0 ]; then
 	cancel_update "** Clone failed"
 fi
 
+#
+# Shairport-sync
+#
+
 PACKAGE="shairport-sync"
 PACKAGE_DEB="shairport-sync_5.0.2-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB..."
+message_log "** - Building $PACKAGE_DEB"
 cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
-message_log "** - Installing $PACKAGE_DEB..."
-cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
-# Options preserve /etc/shairport-sync.conf from image build
-apt-mark unhold $PACKAGE
-apt -y --allow-downgrades -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install /tmp/$PACKAGE_DEB
-if [ $? -ne 0 ]; then
-	cancel_update "** Install failed"
-fi
-
-PACKAGE="nqptp"
-PACKAGE_DEB="nqptp_1.2.6-1moode1_arm64.deb"
-message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB..."
-cd "$WD/pkgbuild/packages/$PACKAGE"
-./build.sh
-if [ $? -ne 0 ]; then
-	cancel_update "** Build failed"
-fi
-message_log "** - Installing $PACKAGE_DEB..."
+message_log "** - Installing $PACKAGE_DEB"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
+message_log "** - Configuring /etc/$PACKAGE.conf"
+# /etc/shairport-sync.conf
+# General
+# interpolation = auto
+# disable_synchronization = no
+# disable_standby_mode = auto
+# cover_art_cache_directory = /var/local/www/imagesw/airplay-covers
+# Audio
+# audio_backend_latency_offset_in_seconds = 0.0
+# audio_backend_buffer_desired_length_in_seconds = 0.2
+# output_rate = auto
+# output_format = auto
+# output_channels = auto
+# eight_channel_mode = on
+# six_channel_mode = on
+# mixdown = auto
+# output_channel_mapping = auto
+# Session
+# run_this_before_entering_active_state = /var/local/www/commandw/spspre.sh
+# run_this_after_exiting_active_state = /var/local/www/commandw/spspost.sh
+# active_state_timeout = 10.0
+# wait_for_completion = yes
+# allow_session_interruption = no
+# session_timeout = 60
+sed -i -e 's/\/\/.*\(interpolation =\)/\1/' \
+	-e 's/\/\/.*\(disable_synchronization =\)/\1/' \
+	-e 's/\/\/.*\(disable_standby_mode =\)/\1/' \
+	-e 's/\/\/.*\(cover_art_cache_directory\)[ ]=[ ]\".*\";[ ]\(.*\)/\1 = "\/var\/local\/www\/imagesw\/airplay-covers"; \2/' \
+	-e 's/\/\/.*\(audio_backend_latency_offset_in_seconds =\)/\1/' \
+	-e 's/\/\/.*\(audio_backend_buffer_desired_length_in_seconds =\)/\1/' \
+	-e '0,/output_rate =/s/\/\/.*\(output_rate =\)/\1/' \
+	-e '0,/output_format =/s/\/\/.*\(output_format =\)/\1/' \
+	-e '0,/output_channels =/s/\/\/.*\(output_channels =\)/\1/' \
+	-e 's/\/\/.*\(eight_channel_mode =\)/\1/' \
+	-e 's/\/\/.*\(six_channel_mode =\)/\1/' \
+	-e 's/\/\/.*\(mixdown =\)/\1/' \
+	-e 's/\/\/.*\(output_channel_mapping =\)/\1/' \
+	-e 's/\/\/.*\(run_this_before_entering_active_state\)[ ]=[ ]\".*\";[ ]\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspre.sh"; \2/' \
+	-e 's/\/\/.*\(run_this_after_exiting_active_state\)[ ]=[ ]\".*\";[ ]\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspost.sh"; \2/' \
+	-e 's/\/\/.*\(active_state_timeout =\)/\1/' \
+	-e 's/\/\/.*\(wait_for_completion\)[ ]=[ ]\".*\"\(.*\)/\1 = "yes"\2/' \
+	-e 's/\/\/.*\(allow_session_interruption =\)/\1/' \
+	-e 's/\/\/.*\(session_timeout =\)/\1/' \
+	/etc/shairport-sync.conf
+if [ $? -ne 0 ]; then
+	cancel_update "** Configure failed"
+fi
+message_log "** - Save package file to home dir"
+cp /tmp/$PACKAGE_DEB "$HOME_DIR"
+if [ $? -ne 0 ]; then
+	cancel_update "** Save package failed"
+fi
 
-message_log "** - Update $PLUGIN_NAME systemd services"
+#
+# Nqptp
+#
+
+PACKAGE="nqptp"
+PACKAGE_DEB="nqptp_1.2.6-1moode1_arm64.deb"
+message_log "** - Build and Install $PLUGIN_NAME"
+message_log "** - Building $PACKAGE_DEB"
+cd "$WD/pkgbuild/packages/$PACKAGE"
+./build.sh
+if [ $? -ne 0 ]; then
+	cancel_update "** Build failed"
+fi
+message_log "** - Installing $PACKAGE_DEB"
+cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
+apt-mark unhold $PACKAGE
+apt -y install /tmp/$PACKAGE_DEB
+if [ $? -ne 0 ]; then
+	cancel_update "** Install failed"
+fi
+message_log "** - Save package file to home dir"
+cp /tmp/$PACKAGE_DEB "$HOME_DIR"
+if [ $? -ne 0 ]; then
+	cancel_update "** Save package failed"
+fi
+
+message_log "** - Update systemd services"
 systemctl stop shairport-sync
+if [ $? -ne 0 ]; then
+	cancel_update "** Stop shairport-sync failed"
+fi
 systemctl stop nqptp
+if [ $? -ne 0 ]; then
+	cancel_update "** Stop nqptp failed"
+fi
 systemctl disable shairport-sync
+if [ $? -ne 0 ]; then
+	cancel_update "** Disable shairport-sync failed"
+fi
 systemctl disable nqptp
+if [ $? -ne 0 ]; then
+	cancel_update "** Disable nqptp failed"
+fi
 
 # 3 - Flush cached disk writes
 STEP=$((STEP + 1))

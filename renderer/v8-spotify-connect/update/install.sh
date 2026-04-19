@@ -21,14 +21,17 @@
 # Environment
 #
 
-# Plugin name and update date
+# 1: Plugin name and update date
 PLUGIN_NAME=$1
 PLUGIN_UPDATE_DATE="2026-MM-DD"
-SQLDB=/var/local/www/db/moode-sqlite3.db
 
-# Initialize the step counter
+# 2: Initialize the step counter
 STEP=0
 TOTAL_STEPS=3
+
+# System vars
+SQLDB=/var/local/www/db/moode-sqlite3.db
+HOME_DIR=$(moodeutl -d -gv home_dir)
 
 # Log files
 MOODE_LOG="/var/log/moode.log"
@@ -105,19 +108,25 @@ fi
 PACKAGE="librespot"
 PACKAGE_DEB="librespot_0.8.0-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB..."
+message_log "** - Building $PACKAGE_DEB"
 cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
-message_log "** - Installing $PACKAGE_DEB..."
+message_log "** - Installing $PACKAGE_DEB"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
-# Options preserve /etc/shairport-sync.conf from image build
 apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
+fi
+
+message_log "** - Save package file to home dir"
+HOME_DIR=$(moodeutl -d -gv home_dir)
+cp /tmp/$PACKAGE_DEB "$HOME_DIR"
+if [ $? -ne 0 ]; then
+	cancel_update "** Save package failed"
 fi
 
 # 3 - Flush cached disk writes
