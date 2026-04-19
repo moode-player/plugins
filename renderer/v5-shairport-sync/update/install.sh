@@ -102,34 +102,36 @@ if [ $? -ne 0 ]; then
 	cancel_update "** Clone failed"
 fi
 
-PACKAGE_DIR="shairport-sync"
+PACKAGE="shairport-sync"
 PACKAGE_DEB="shairport-sync_5.0.2-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
 message_log "** - Building $PACKAGE_DEB..."
-cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
+cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
 message_log "** - Installing $PACKAGE_DEB..."
-cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 # Options preserve /etc/shairport-sync.conf from image build
+apt-mark unhold $PACKAGE
 apt -y --allow-downgrades -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
 
-PACKAGE_DIR="nqptp"
+PACKAGE="nqptp"
 PACKAGE_DEB="nqptp_1.2.6-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
 message_log "** - Building $PACKAGE_DEB..."
-cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
+cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
 message_log "** - Installing $PACKAGE_DEB..."
-cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
+apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"

@@ -102,18 +102,19 @@ if [ $? -ne 0 ]; then
 	cancel_update "** Clone failed"
 fi
 
-PACKAGE_DIR="librespot"
+PACKAGE="librespot"
 PACKAGE_DEB="librespot_0.8.0-1moode1_arm64.deb"
 message_log "** - Build and Install $PLUGIN_NAME"
 message_log "** - Building $PACKAGE_DEB..."
-cd "$WD/pkgbuild/packages/$PACKAGE_DIR"
+cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
 message_log "** - Installing $PACKAGE_DEB..."
-cp "$WD/pkgbuild/packages/$PACKAGE_DIR/dist/binary/$PACKAGE_DEB" /tmp/
+cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 # Options preserve /etc/shairport-sync.conf from image build
+apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
