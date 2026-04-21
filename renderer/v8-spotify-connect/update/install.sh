@@ -27,7 +27,7 @@ PLUGIN_UPDATE_DATE="2026-MM-DD"
 
 # 2: Initialize the step counter
 STEP=0
-TOTAL_STEPS=3
+TOTAL_STEPS=5
 
 # System vars
 SQLDB=/var/local/www/db/moode-sqlite3.db
@@ -85,51 +85,51 @@ if [ $? -ne 0 ]; then
 	cancel_update "** Step failed"
 fi
 
-# 2 - Build and Install plugin
+# 2 - Install git
 STEP=$((STEP + 1))
-message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PLUGIN_NAME"
-message_log "** - Install git tools"
+message_log "** Step $STEP-$TOTAL_STEPS: Install git tools"
 apt -y install git
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
 
-message_log "** - Set Debian exports"
-export DEBFULLNAME=User
-export DEBEMAIL=User@Email.com
-
-message_log "** - Clone package build repo"
+# 3 - Clone repo
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Clone package repo"
 rm -rf $WD/pkgbuild
 git clone --depth 1 https://github.com/moode-player/pkgbuild.git
 if [ $? -ne 0 ]; then
 	cancel_update "** Clone failed"
 fi
 
+# 4 - Build and install librespot
 PACKAGE="librespot"
 PACKAGE_DEB="librespot_0.8.0-1moode1_arm64.deb"
-message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB"
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
+export DEBFULLNAME=User
+export DEBEMAIL=User@Email.com
+message_log "** - Building $PACKAGE"
 cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
-message_log "** - Installing $PACKAGE_DEB"
+message_log "** - Installing $PACKAGE"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
-
-message_log "** - Save package file to home dir"
-HOME_DIR=$(moodeutl -d -gv home_dir)
+message_log "** - Save package to home dir"
 cp /tmp/$PACKAGE_DEB "$HOME_DIR"
 if [ $? -ne 0 ]; then
 	cancel_update "** Save package failed"
 fi
+message_log "** - Done"
 
-# 3 - Flush cached disk writes
+# 5 - Flush cached disk writes
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Sync changes to disk"
 message_log "Finish $PLUGIN_UPDATE_DATE update for $PLUGIN_NAME"

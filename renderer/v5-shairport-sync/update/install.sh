@@ -27,7 +27,7 @@ PLUGIN_UPDATE_DATE="2026-MM-DD"
 
 # 2: Initialize the step counter
 STEP=0
-TOTAL_STEPS=3
+TOTAL_STEPS=7
 
 # System vars
 SQLDB=/var/local/www/db/moode-sqlite3.db
@@ -85,40 +85,37 @@ if [ $? -ne 0 ]; then
 	cancel_update "** Step failed"
 fi
 
-# 2 - Build and Install plugin
+# 2 - Install git
 STEP=$((STEP + 1))
-message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PLUGIN_NAME"
-message_log "** - Install git tools"
+message_log "** Step $STEP-$TOTAL_STEPS: Install git tools"
 apt -y install git
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
 
-message_log "** - Set Debian exports"
-export DEBFULLNAME=User
-export DEBEMAIL=User@Email.com
-
-message_log "** - Clone package build repo"
+# 3 - Clone repo
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Clone package repo"
 rm -rf $WD/pkgbuild
 git clone --depth 1 https://github.com/moode-player/pkgbuild.git
 if [ $? -ne 0 ]; then
 	cancel_update "** Clone failed"
 fi
 
-#
-# Shairport-sync
-#
-
+# 4 - Build and install shairport-sync
 PACKAGE="shairport-sync"
 PACKAGE_DEB="shairport-sync_5.0.2-1moode1_arm64.deb"
-message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB"
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
+export DEBFULLNAME=User
+export DEBEMAIL=User@Email.com
+message_log "** - Building $PACKAGE"
 cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
-message_log "** - Installing $PACKAGE_DEB"
+message_log "** - Installing $PACKAGE"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
@@ -165,64 +162,73 @@ sed -i -e 's/\/\/.*\(interpolation =\)/\1/' \
 	-e 's/\/\/.*\(run_this_before_entering_active_state\)[ ]=[ ]\".*\";[ ]\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspre.sh"; \2/' \
 	-e 's/\/\/.*\(run_this_after_exiting_active_state\)[ ]=[ ]\".*\";[ ]\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspost.sh"; \2/' \
 	-e 's/\/\/.*\(active_state_timeout =\)/\1/' \
-	-e 's/\/\/.*\(wait_for_completion\)[ ]=[ ]\".*\"\(.*\)/\1 = "yes"\2/' \
+	-e 's/\/\/.*\(wait_for_completion\)[ ]=[ ].*;\(.*\)/\1 = "yes"\2/' \
 	-e 's/\/\/.*\(allow_session_interruption =\)/\1/' \
 	-e 's/\/\/.*\(session_timeout =\)/\1/' \
 	/etc/shairport-sync.conf
 if [ $? -ne 0 ]; then
 	cancel_update "** Configure failed"
 fi
-message_log "** - Save package file to home dir"
+message_log "** - Save package to home dir"
 cp /tmp/$PACKAGE_DEB "$HOME_DIR"
 if [ $? -ne 0 ]; then
 	cancel_update "** Save package failed"
 fi
+message_log "** - Done"
 
-#
-# Nqptp
-#
-
+# 5 - Build and install nqptp
 PACKAGE="nqptp"
 PACKAGE_DEB="nqptp_1.2.6-1moode1_arm64.deb"
-message_log "** - Build and Install $PLUGIN_NAME"
-message_log "** - Building $PACKAGE_DEB"
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
+export DEBFULLNAME=User
+export DEBEMAIL=User@Email.com
+message_log "** - Building $PACKAGE"
 cd "$WD/pkgbuild/packages/$PACKAGE"
 ./build.sh
 if [ $? -ne 0 ]; then
 	cancel_update "** Build failed"
 fi
-message_log "** - Installing $PACKAGE_DEB"
+message_log "** - Installing $PACKAGE"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
 apt-mark unhold $PACKAGE
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
-message_log "** - Save package file to home dir"
+message_log "** - Save package to home dir"
 cp /tmp/$PACKAGE_DEB "$HOME_DIR"
 if [ $? -ne 0 ]; then
 	cancel_update "** Save package failed"
 fi
+message_log "** - Done"
 
-message_log "** - Update systemd services"
-systemctl stop shairport-sync
+# 6 - Update systemd services
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Update systemd services"
+message_log "** - Stop shairport-sync.service"
+systemctl stop shairport-sync > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	cancel_update "** Stop shairport-sync failed"
 fi
-systemctl stop nqptp
-if [ $? -ne 0 ]; then
-	cancel_update "** Stop nqptp failed"
-fi
-systemctl disable shairport-sync
+message_log "** - Disable shairport-sync.service"
+systemctl disable shairport-sync > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	cancel_update "** Disable shairport-sync failed"
 fi
-systemctl disable nqptp
+message_log "** - Stop nqptp.service"
+systemctl stop nqptp > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	cancel_update "** Stop nqptp failed"
+fi
+message_log "** - Disable nqptp.service"
+systemctl disable nqptp > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	cancel_update "** Disable nqptp failed"
 fi
+message_log "** - Done"
 
-# 3 - Flush cached disk writes
+# 7 - Flush cached disk writes
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Sync changes to disk"
 message_log "Finish $PLUGIN_UPDATE_DATE update for $PLUGIN_NAME"
