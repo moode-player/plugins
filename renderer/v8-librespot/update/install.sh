@@ -117,7 +117,7 @@ if [ $? -ne 0 ]; then
 fi
 message_log "** - Installing $PACKAGE"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
-apt-mark unhold $PACKAGE
+apt-mark unhold $PACKAGE >/dev/null 2>&1
 apt -y install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
