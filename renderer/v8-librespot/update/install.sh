@@ -104,7 +104,8 @@ fi
 
 # 4 - Build and install librespot
 PACKAGE="librespot"
-PACKAGE_DEB="librespot_0.8.0-1moode1_arm64.deb"
+VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='renderer' AND type='spotify-connect'")
+PACKAGE_DEB=$PACKAGE"_"$VERSION"_arm64.deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
