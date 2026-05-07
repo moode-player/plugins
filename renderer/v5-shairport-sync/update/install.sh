@@ -118,7 +118,7 @@ if [ $? -ne 0 ]; then
 fi
 message_log "** - Installing $PACKAGE"
 cp "$WD/pkgbuild/packages/$PACKAGE/dist/binary/$PACKAGE_DEB" /tmp/
-apt -y --allow-change-held-packages install /tmp/$PACKAGE_DEB
+apt -y --allow-change-held-packages -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install /tmp/$PACKAGE_DEB
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
