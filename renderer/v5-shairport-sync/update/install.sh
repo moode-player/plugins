@@ -122,11 +122,17 @@ apt -y --allow-change-held-packages -o Dpkg::Options::="--force-confdef" -o Dpkg
 if [ $? -ne 0 ]; then
 	cancel_update "** Install failed"
 fi
-message_log "** - Configuring /etc/$PACKAGE.conf"
+message_log "** - Configuring $PACKAGE default settings"
 /var/www/util/sysutil.sh upd-shairport-sync-conf
 if [ $? -ne 0 ]; then
-	cancel_update "** Configure failed"
+	cancel_update "** Configure conf failed"
 fi
+sqlite3 $SQLDB "DROP TABLE cfg_airplay"
+cat $SQLDB".sql" | grep "cfg_airplay" | sqlite3 $SQLDB
+if [ $? -ne 0 ]; then
+	cancel_update "** Configure sql failed"
+fi
+
 message_log "** - Save package to home dir"
 cp /tmp/$PACKAGE_DEB "$HOME_DIR"
 if [ $? -ne 0 ]; then
