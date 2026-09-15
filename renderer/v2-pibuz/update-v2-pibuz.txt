@@ -1,0 +1,10 @@
+########################################
+# Update package for plugin
+#
+# http://moodeaudio.org
+########################################
+
+Name: Qobuz Connect v2 Package Build
+Date: 2026-09-15
+Release: 1.0.0
+Description: Debian package build for Qobuz Connect renderer (pibuz)
