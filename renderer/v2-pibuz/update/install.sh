@@ -34,6 +34,7 @@ TOTAL_STEPS=5
 # System vars
 SQLDB=/var/local/www/db/moode-sqlite3.db
 HOME_DIR=$(moodeutl -d -gv home_dir)
+PKG_ARCH=$(dpkg --print-architecture)
 
 # Log files
 MOODE_LOG="/var/log/moode.log"
@@ -111,7 +112,7 @@ REPO_VERSION=$(cat "$WD/pkgbuild/packages/$PACKAGE"/build.sh | grep "PKG=" | cut
 if [ "$REPO_VERSION" != "$PLUGIN_VERSION" ]; then
 	cancel_update "** Version check: The repo version is newer. Apply latest In-Place update then try again."
 fi
-PACKAGE_DEB=$PACKAGE"_"$PLUGIN_VERSION"_arm64.deb"
+PACKAGE_DEB=$PACKAGE"_"$PLUGIN_VERSION"_"$PKG_ARCH".deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
