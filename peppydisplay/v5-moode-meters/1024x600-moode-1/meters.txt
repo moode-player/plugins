@@ -1,0 +1,157 @@
+[big-bang]
+meter.type = circular
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = big-bang-bgr.png
+fgr.filename =
+indicator.filename = big-bang-needle.png
+steps.per.degree = 2
+left.start.angle = 135
+left.stop.angle = 45
+right.start.angle = -135
+right.stop.angle = -45
+#distance = 178
+distance = 184
+left.origin.x = 518
+left.origin.y = 302
+right.origin.x = 499
+right.origin.y = 302
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[blue]
+meter.type = circular
+channels = 1
+ui.refresh.period = 0.033
+bgr.filename = blue-bgr.png
+indicator.filename = blue-needle.png
+steps.per.degree = 2
+start.angle = 45
+stop.angle = -46
+distance = 405
+mono.origin.x = 506
+mono.origin.y = 765
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[dash]
+meter.type = linear
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = dash-bgr.png
+indicator.filename = dash-indicator.png
+left.x = 61
+left.y = 247
+#left.y = 252
+right.x = 61
+right.y = 332
+#right.y = 338
+position.regular = 9
+position.overload = 4
+step.width.regular = 72
+step.width.overload = 72
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[gas]
+meter.type = linear
+channels = 2
+ui.refresh.period = 0.033
+bgr.filename = gas-bgr.png
+indicator.filename = gas-indicator.png
+left.x = 98
+left.y = 249
+right.x = 98
+right.y = 320
+position.regular = 69
+step.width.regular = 12
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[orange]
+meter.type = circular
+channels = 1
+ui.refresh.period = 0.033
+bgr.filename = orange-bgr.png
+fgr.filename = orange-fgr.png
+indicator.filename = orange-needle.png
+steps.per.degree = 2
+start.angle = 47
+stop.angle = -48
+distance = 302
+mono.origin.x = 512
+mono.origin.y = 564
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[rainbow]
+meter.type = circular
+channels = 1
+ui.refresh.period = 0.033
+bgr.filename = rainbow-bgr.png
+indicator.filename = rainbow-needle.png
+steps.per.degree = 2
+start.angle = 39
+stop.angle = -39
+distance = 328
+mono.origin.x = 522
+mono.origin.y = 742
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[steam-punk]
+meter.type = linear
+channels = 2
+direction = top-bottom
+flip.right.x = True
+ui.refresh.period = 0.033
+bgr.filename = steam-punk-bgr.png
+indicator.filename = steam-punk-indicator.png
+left.x = 0
+left.y = 0
+right.x = 785
+right.y = 0
+position.regular = 20
+step.width.regular = 30
+meter.x = 0
+meter.y = -1
+screen.bgr = steam-punk-screen-bgr.png
+
+[white-red]
+meter.type = circular
+channels = 1
+ui.refresh.period = 0.033
+bgr.filename = white-red-bgr.png
+indicator.filename = white-red-needle.png
+steps.per.degree = 2
+start.angle = 39
+stop.angle = -39
+distance = 262
+mono.origin.x = 510
+mono.origin.y = 644
+meter.x = 0
+meter.y = 0
+screen.bgr =
+
+[vertical-linear]
+meter.type = linear
+channels = 2
+direction = bottom-top
+ui.refresh.period = 0.033
+bgr.filename = vertical-linear-bgr.png
+indicator.filename = vertical-linear-indicator.png
+left.x = 464
+left.y = 49
+right.x = 532
+right.y = 49
+position.regular = 90
+step.width.regular = 4
+meter.x = 0
+meter.y = 0
+screen.bgr =
