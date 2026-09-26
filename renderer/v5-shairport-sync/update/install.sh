@@ -32,6 +32,7 @@ TOTAL_STEPS=7
 # System vars
 SQLDB=/var/local/www/db/moode-sqlite3.db
 HOME_DIR=$(moodeutl -d -gv home_dir)
+PKG_ARCH=$(dpkg --print-architecture)
 
 # Log files
 MOODE_LOG="/var/log/moode.log"
@@ -105,7 +106,7 @@ fi
 # 4 - Build and install shairport-sync
 PACKAGE="shairport-sync"
 VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='renderer' AND type='airplay'")
-PACKAGE_DEB=$PACKAGE"_"$VERSION"_arm64.deb"
+PACKAGE_DEB=$PACKAGE"_"$VERSION"_"$PKG_ARCH".deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
@@ -143,7 +144,7 @@ message_log "** - Done"
 # 5 - Build and install nqptp
 PACKAGE="nqptp"
 VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='system' AND type='nqptp'")
-PACKAGE_DEB=$PACKAGE"_"$VERSION"_arm64.deb"
+PACKAGE_DEB=$PACKAGE"_"$VERSION"_"$PKG_ARCH".deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
