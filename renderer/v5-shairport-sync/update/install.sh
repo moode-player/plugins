@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+# Shairport-sync build/install
+#
 
 #
 # Environment
@@ -23,7 +25,7 @@
 
 # 1: Plugin name and update date
 PLUGIN_NAME=$1
-PLUGIN_UPDATE_DATE="2026-08-03"
+PLUGIN_RELEASE_DATE="2026-09-28"
 
 # 2: Initialize the step counter
 STEP=0
@@ -74,7 +76,7 @@ echo
 WD=/var/local/www
 cd $WD
 truncate $PLUGIN_LOG --size 0
-message_log "Start $PLUGIN_UPDATE_DATE update for $PLUGIN_NAME"
+message_log "Start $PLUGIN_RELEASE_DATE update for $PLUGIN_NAME"
 
 # 1 - Install timesyncd so date will be current otherwise requests to the repos will fail
 # NOTE: It should already be present in 2023 RaspiOS Bullseye 32/64-bit releases
@@ -104,8 +106,12 @@ fi
 
 # 4 - Build and install shairport-sync
 PACKAGE="shairport-sync"
-VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='renderer' AND type='airplay'")
-PACKAGE_DEB=$PACKAGE"_"$VERSION"_arm64.deb"
+PLUGIN_VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='renderer' AND type='airplay'")
+REPO_VERSION=$(cat "$WD/pkgbuild/packages/$PACKAGE"/build.sh | grep "PKG=" | cut -d"_" -f2 | cut -d"\"" -f1)
+if [ "$REPO_VERSION" != "$PLUGIN_VERSION" ]; then
+	cancel_update "** Version check: The repo version is newer. Apply latest In-Place update then try again."
+fi
+PACKAGE_DEB=$PACKAGE"_"$PLUGIN_VERSION"_arm64.deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
@@ -142,8 +148,8 @@ message_log "** - Done"
 
 # 5 - Build and install nqptp
 PACKAGE="nqptp"
-VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='system' AND type='nqptp'")
-PACKAGE_DEB=$PACKAGE"_"$VERSION"_arm64.deb"
+PLUGIN_VERSION=$(sqlite3 $SQLDB "SELECT version FROM cfg_plugin WHERE component='system' AND type='nqptp'")
+PACKAGE_DEB=$PACKAGE"_"$PLUGIN_VERSION"_arm64.deb"
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Build and Install $PACKAGE"
 export DEBFULLNAME=User
@@ -195,7 +201,7 @@ message_log "** - Done"
 # 7 - Flush cached disk writes
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Sync changes to disk"
-message_log "Finish $PLUGIN_UPDATE_DATE update for $PLUGIN_NAME"
+message_log "Finish $PLUGIN_RELEASE_DATE update for $PLUGIN_NAME"
 sync
 
 cd ~/
