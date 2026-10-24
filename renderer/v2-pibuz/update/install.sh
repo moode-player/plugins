@@ -75,7 +75,7 @@ echo
 
 WD=/var/local/www
 cd $WD
-truncate $PLUGIN_LOG --size 0
+#truncate $PLUGIN_LOG --size 0
 message_log "Start $PLUGIN_RELEASE_DATE update for $PLUGIN_NAME"
 
 # 1 - Install timesyncd so date will be current otherwise requests to the repos will fail
