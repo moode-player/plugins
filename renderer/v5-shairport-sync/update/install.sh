@@ -172,6 +172,7 @@ cp /tmp/$PACKAGE_DEB "$HOME_DIR"
 if [ $? -ne 0 ]; then
 	cancel_update "** Save package failed"
 fi
+chmod 0755 "$HOME_DIR/$PACKAGE_DEB"
 message_log "** - Done"
 
 # 6 - Update systemd services
