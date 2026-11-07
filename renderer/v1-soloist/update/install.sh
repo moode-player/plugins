@@ -27,11 +27,11 @@
 
 # 1: Plugin name and update date
 PLUGIN_NAME=$1
-PLUGIN_RELEASE_DATE="2026-10-31"
+PLUGIN_RELEASE_DATE="2026-11-07"
 
 # 2: Initialize the step counter
 STEP=0
-TOTAL_STEPS=5
+TOTAL_STEPS=6
 
 # System vars
 SQLDB=/var/local/www/db/moode-sqlite3.db
@@ -123,7 +123,22 @@ if [ $? -ne 0 ] || [ ! -f /tmp/soloist/soloist ]; then
 	cancel_update "** Extract failed"
 fi
 
-# 4 - Install Spotify Soloist
+# 4 Check version
+STEP=$((STEP + 1))
+message_log "** Step $STEP-$TOTAL_STEPS: Check version"
+if [ -f /usr/local/bin/soloist ]; then
+	INSTALLED_VER=$(/usr/local/bin/soloist --version | awk -F" " '{print $2}')
+	DOWNLOAD_VER=$(/tmp/soloist/soloist --version | awk -F" " '{print $2}')
+	if [ "$DOWNLOAD_VER" = "$INSTALLED_VER" ]; then
+		cancel_update "** Downloaded version is same as installed version"
+	else
+		message_log "** Downloaded version is newer than installed version"
+	fi
+else
+	message_log "** New install, version check skipped"
+fi
+
+# 5 - Install Spotify Soloist
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Install Spotify Soloist"
 # Stop a running instance before replacing the binary
@@ -144,7 +159,7 @@ if [ "$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='soloistsvc'")"
 fi
 message_log "** - Done"
 
-# 5 - Flush cached disk writes
+# 6 - Flush cached disk writes
 STEP=$((STEP + 1))
 message_log "** Step $STEP-$TOTAL_STEPS: Sync changes to disk"
 message_log "Finish $PLUGIN_RELEASE_DATE update for $PLUGIN_NAME"
